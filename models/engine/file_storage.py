@@ -15,7 +15,7 @@ class FileStorage:
     deserializes JSON file to instances
     Attributes:
         __file_path: path to the JSON file
-         __objects: objects will be stored
+        __objects: objects will be stored
     """
     __file_path = "file.json"
     __objects = {}
@@ -25,12 +25,13 @@ class FileStorage:
         Return:
             returns a dictionary of __object
         """
-        if cls is None:
-            return self.__objects
-        else:
-            n_objs = {obj: key for obj, key in self.__objects.items()
-                      if isinstance(key, cls)}
-            return n_objs
+        if cls is not None:
+            n_dict = {}
+            for key, value in self.__objects.items():
+                if cls == type(value):
+                    n_dict[key] = value
+            return n_dict
+        return self.__objects
 
     def new(self, obj):
         """sets __object to given obj
@@ -62,14 +63,14 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Delete object in FileStorage"""
-        if obj is None:
-            return
-
-        key = str(obj.__class__.__name__) + "." + str(obj.id)
-        del self.__objects[key]
+        """ to delete obj from __objects if it’s inside
+        """
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects.keys():
+                del self.__objects[key]
         self.save()
 
     def close(self):
-        """method for deserializing the JSON file to objects"""
-        self.reload()
+        """ Close function. """
+        reload()

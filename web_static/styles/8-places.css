@@ -1,47 +1,49 @@
 .places {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    flex-flow: row wrap;
-    margin-bottom: 65px;
+    padding: 0 20px;
+    margin-bottom: 8%;
 }
-
-h1 {
-    font-size: 30px;
+.places h1 {
     width: 100%;
-    margin-bottom: 0px;
-    padding-left: 20px;
+    text-align: left;
+    font-size: 30px;
 }
-
-article {
+.places article {
     width: 390px;
     padding: 20px;
     margin: 20px;
     border: 1px solid #FF5A5F;
     border-radius: 4px;
 }
-
-article h2 {
-    font-size: 30px;
-    text-align: center;
+.places h2 {
+	font-size: 30px;
+	text-align: center;
+	margin-top: 0;
+}
+.title_box {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -2%;
 }
 
+.title_box h2 {
+    text-align: center;
+    margin: 25px 0px 40px 30%;
+}
 .price_by_night {
     display: flex;
+    height: 60px;
+    min-width: 60px;
+    font-size: 30px;
     justify-content: center;
     align-items: center;
-    position: relative;
-    top: -65px;
-    left: 290px;
-    width: 90px;
-    height: 90px;
     color: #FF5A5F;
-    border-radius:50%;
-    border: solid 4px;
-    overflow:hidden;
-}
-
-.price_by_night p {
-    font-size: 30px;
+    border: 4px solid #FF5A5F;
+    border-radius: 50%;
+    align-items: right;
+    padding: 2.3%;
 }
 
 .information {
@@ -49,59 +51,34 @@ article h2 {
     justify-content: center;
     align-items: center;
     height: 80px;
-    border: 1px solid #DDDDDD;
-    border-left: 0px;
-    border-right: 0px;
-    margin-top: -55px;
+    border-top: 1px solid #DDDDDD;
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 5%;
 }
 
-.logo_guests {
+.information div {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    width: 50px;
-    height: 50px;
-    position: relative;
-    margin-left: 10px;
-    top: 15px;
-    background-image: url(../images/icon_group.png);
+    flex-direction: column;
+    height: 65px;
 }
 
-.logo_rooms {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    position: relative;
-    margin-left: 10px;
-    top: 15px;
-    background-image: url(../images/icon_bed.png);
+.information .max_guest {
+    background: url("../images/icon_group.png") no-repeat top center;
+    width: 100px;
 }
 
-.logo_bath {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    position: relative;
-    margin-left: 40px;
-    top: 15px;
-    background-image: url(../images/icon_bath.png);
+.information .number_rooms {
+    background: url("../images/icon_bed.png") no-repeat top center;
+    width: 100px;
 }
 
-.max_guest, .number_rooms, .number_bathrooms p {
-    padding-left: 25px;
+.information .number_bathrooms {
+    background: url("../images/icon_bath.png") no-repeat top center;
+    width: 100px;
 }
 
 .user {
-    display: flex;
-    justify-content: start;
-    margin-bottom: 30px;
-}
-
-.description {
-    margin-top: -24px;
-    text-align: justify;
+  margin-bottom: 1.5%;
 }

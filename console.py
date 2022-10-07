@@ -17,8 +17,8 @@ class HBNBCommand(cmd.Cmd):
     """this class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    all_classes = ["BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"]
+    all_classes = {"BaseModel", "User", "State", "City",
+                   "Amenity", "Place", "Review"}
 
     def emptyline(self):
         """Ignores empty spaces"""
@@ -42,14 +42,24 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
+            params = {}
+            if len(my_list) > 1:
+                for i in range(1, len(my_list)):
+                    if len(my_list[i].split("=")) == 2:
+                        key = my_list[i].split("=")[0]
+                        value = my_list[i].split("=")[1].replace("_", " ")
+                        value = value.strip('"')
+                        if value.isnumeric():
+                            value = int(value)
+                        else:
+                            try:
+                                float(value)
+                            except Exception:
+                                pass
+                        params[key] = value
             obj = eval("{}()".format(my_list[0]))
-            for element in my_list[1:]:
-                if "=" not in element:
-                    continue
-                key, val = element.split("=")
-                val = val.replace("_", " ")
-                if hasattr(obj, key):
-                    setattr(obj, key, eval(val))
+            for key, val in params.items():
+                setattr(obj, key, val)
             obj.save()
             print("{}".format(obj.id))
         except SyntaxError:
@@ -133,7 +143,6 @@ class HBNBCommand(cmd.Cmd):
             print(my_list)
             return
         try:
-            objects = storage.all(line)
             args = line.split(" ")
             if args[0] not in self.all_classes:
                 raise NameError()
