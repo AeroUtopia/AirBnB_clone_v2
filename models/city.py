@@ -1,24 +1,21 @@
-#!/usr/bin/python
-""" holds class City"""
-import models
+#!/usr/bin/python3
+""" 0x02. AirBnB clone - MySQL, task 6. DBStorage - States and Cities """
+from sqlalchemy import Column, String
+from sqlalchemy.schema import ForeignKey
 from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 
 class City(BaseModel, Base):
-    """Representation of city """
-    if models.storage_t == "db":
-        __tablename__ = 'cities'
-        state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        name = Column(String(128), nullable=False)
-        places = relationship("Place", backref="cities")
-    else:
-        state_id = ""
-        name = ""
+    """Defines attributes for `City` as it inherits from `BaseModel`,
+    and ORM properties in relation to table `cities`.
 
-    def __init__(self, *args, **kwargs):
-        """initializes city"""
-        super().__init__(*args, **kwargs)
+    Attributes:
+        name (Column): name of state, string of max 128 chars
+        state_id (Column): string of max 60 chars, foreign key to `states.id`
+    """
+    __tablename__ = 'cities'
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+    places = relationship('Place', backref='cities',
+                          cascade='all, delete-orphan')

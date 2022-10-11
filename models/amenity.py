@@ -1,21 +1,19 @@
-#!/usr/bin/python
-""" holds class Amenity"""
-import models
-from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
+#!/usr/bin/python3
+""" 0x02. AirBnB clone - MySQL, task 10. DBStorage - Amenity... and BOOM! """
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from .base_model import BaseModel, Base
+from .place import place_amenity
 
 
 class Amenity(BaseModel, Base):
-    """Representation of Amenity """
-    if models.storage_t == 'db':
-        __tablename__ = 'amenities'
-        name = Column(String(128), nullable=False)
-    else:
-        name = ""
+    """ Defines attributes for `Amenity` as it inherits from `BaseModel`,
+    and ORM properties in relation to table `amenities`.
 
-    def __init__(self, *args, **kwargs):
-        """initializes Amenity"""
-        super().__init__(*args, **kwargs)
+    Attributes:
+        name (Column): name of state, string of max 128 chars
+        amenities (relationship): many-to-many-association to `Place`
+    """
+    __tablename__ = 'amenities'
+    name = Column(String(128), nullable=False)
+    place_amenities = relationship('Place', secondary=place_amenity)
