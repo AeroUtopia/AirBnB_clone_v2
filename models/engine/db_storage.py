@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-"""This is the db storage class for AirBnB"""
-import datetime
-from os import getenv
-from sqlalchemy.orm import sessionmaker, scoped_session
+"""DBstorage"""
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+import os
 from models.base_model import BaseModel, Base
 from models.user import User
 from models.state import State
@@ -13,131 +12,84 @@ from models.place import Place
 from models.review import Review
 
 
+def get_url():
+    """Get url for the engine"""
+
+    value = os.getenv("HBNB_MYSQL_USER")
+    value1 = os.getenv("HBNB_MYSQL_PWD")
+    value2 = os.getenv("HBNB_MYSQL_HOST")
+    value3 = os.getenv("HBNB_MYSQL_DB")
+
+    u = 'mysql+mysqldb://{}:{}@{}:3306/{}'\
+        .format(value, value1, value2, value3)
+
+    return u
+
+
 class DBStorage():
-    """
-    Database Engine for AirBnB project
-    """
+    """Engine Creator"""
     __engine = None
     __session = None
 
     def __init__(self):
-        """Init method"""
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(getenv('HBNB_MYSQL_USER'),
-                                              getenv('HBNB_MYSQL_PWD'),
-                                              getenv('HBNB_MYSQL_HOST'),
-                                              getenv('HBNB_MYSQL_DB')),
-                                      pool_pre_ping=True)
-        if getenv('HBNB_ENV') == 'test':
-            Base.metadata.drop_all(bind=self.__engine)
+        """Init"""
+        self.__engine = create_engine(get_url(), pool_pre_ping=True)
+
+        value4 = os.getenv("HBNB_ENV")
+        if value4 == 'test':
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Returns dictionary with all objects depending
-        of the class name (argument cls)"""
-        if cls:
-            objs = self.__session.query(self.classes()[cls])
-        else:
-            objs = self.__session.query(State).all()
-            objs += self.__session.query(City).all()
-            objs += self.__session.query(User).all()
-            objs += self.__session.query(Place).all()
-            objs += self.__session.query(Amenity).all()
-            objs += self.__session.query(Review).all()
+        """ALL function"""
+        table = [User, State, City, Amenity, Place, Review]
+        """ table = [State, City, User, Place] """
+        new_dict = {}
+        """ if type(cls) is not str:
+            x = cls
+            cls = str(cls)
+        elif cls != None:
+            x = eval(cls) """
 
-        dic = {}
-        for obj in objs:
-            k = '{}.{}'.format(type(obj).__name__, obj.id)
-            dic[k] = obj
-        return dic
+        if cls is not None:
+            if type(cls) is str:
+                cls = eval(cls)
+            all_data = self.__session.query(cls)
+            for row in all_data:
+                key = cls.__name__ + "." + row.id
+                new_dict[key] = row
+            return new_dict
+
+        else:
+            for indx in table:
+                for obj in self.__session.query(indx):
+                    key = indx.__class__.__name__ + "." + obj.id
+                    new_dict[key] = obj
+                return new_dict
 
     def new(self, obj):
-        """Add the object to the current
-        database session (self.__session)"""
+        """Function that add new objects in current session"""
         self.__session.add(obj)
 
     def save(self):
-        """Commit all changes of the current
-        database session (self.__session)"""
+        """Commit all the changes in the current session"""
         self.__session.commit()
 
     def delete(self, obj=None):
-        """Delete from the current database session obj if not None"""
-        if obj:
+        """Delete objects from the current session"""
+        if obj is not None:
             self.__session.delete(obj)
+            self.save()
 
     def reload(self):
-        """Create the current database session (self.__session) from
-        the engine (self.__engine) by using a sessionmaker"""
-        from models.user import User
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.place import Place
-        from models.review import Review
-
-        Base.metadata.create_all(self.__engine)
-        self.__session = sessionmaker(bind=self.__engine,
-                                      expire_on_commit=False)
-        Session = scoped_session(self.__session)
+        """create all tables in the database
+            create the current database session
+        """
+        Session_new = sessionmaker(expire_on_commit=False)
+        Session_new.configure(bind=self.__engine)
+        Session = scoped_session(Session_new)
         self.__session = Session()
+        Base.metadata.create_all(self.__engine)
 
     def close(self):
-        """Removes the session"""
+        """method on the private session attribute"""
         self.__session.close()
-
-    def classes(self):
-        """Returns a dictionary of valid classes and their references."""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.place import Place
-        from models.review import Review
-
-        classes = {"BaseModel": BaseModel,
-                   "User": User,
-                   "State": State,
-                   "City": City,
-                   "Amenity": Amenity,
-                   "Place": Place,
-                   "Review": Review}
-        return classes
-
-    def attributes(self):
-        """Returns the valid attributes and their types for classname."""
-        attributes = {
-            "BaseModel":
-                     {"id": str,
-                      "created_at": datetime.datetime,
-                      "updated_at": datetime.datetime},
-            "User":
-                     {"email": str,
-                      "password": str,
-                      "first_name": str,
-                      "last_name": str},
-            "State":
-                     {"name": str},
-            "City":
-                     {"state_id": str,
-                      "name": str},
-            "Amenity":
-                     {"name": str},
-            "Place":
-                     {"city_id": str,
-                      "user_id": str,
-                      "name": str,
-                      "description": str,
-                      "number_rooms": int,
-                      "number_bathrooms": int,
-                      "max_guest": int,
-                      "price_by_night": int,
-                      "latitude": float,
-                      "longitude": float,
-                      "amenity_ids": list},
-            "Review":
-            {"place_id": str,
-                         "user_id": str,
-                         "text": str}
-        }
-        return attributes

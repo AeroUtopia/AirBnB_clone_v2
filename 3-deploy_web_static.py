@@ -1,78 +1,69 @@
 #!/usr/bin/python3
-"""
-do_pack(): Generates a .tgz archive from the
-contents of the web_static folder
-do_deploy(): Distributes an archive to a web server
-deploy (): Creates and distributes an archive to a web server
-"""
-
-from fabric.operations import local, run, put
+"""distributes an archive to your web servers"""
+from fabric.api import *
 from datetime import datetime
-import os
-from fabric.api import env
-import re
+import os.path
+from os.path import getsize
 
 
-env.hosts = ['35.190.176.186', '35.196.156.157']
+env.hosts = ["35.231.133.57", "54.91.43.217"]
 
 
+@runs_once
 def do_pack():
-    """Function to compress files in an archive"""
+    """Function that compress a files"""
+    fil = "web_static_{:s}.tgz".format(datetime.now().strftime("%Y%m%d%H%M%S"))
+    print("Packing web_static to versions/{}".format(fil))
+
     local("mkdir -p versions")
-    filename = "versions/web_static_{}.tgz".format(datetime.strftime(
-                                                   datetime.now(),
-                                                   "%Y%m%d%H%M%S"))
-    result = local("tar -cvzf {} web_static"
-                   .format(filename))
-    if result.failed:
+    path = local("tar -cvzf versions/{:s} web_static".format(fil))
+
+    size = getsize("versions/{}".format(fil))
+
+    if path.succeeded:
+        print("web_static packed: versions/{} -> {}Bytes".format(fil, size))
+        return("versions/{}".format(fil))
+    else:
         return None
-    return filename
 
 
 def do_deploy(archive_path):
-    """Function to distribute an archive to a server"""
-    if not os.path.exists(archive_path):
+    """functio that distributes an archive to your web servers"""
+    if os.path.isfile(archive_path):
+        p1 = archive_path.split("/")
+        # ['versions', 'web_static_20170315003959.tgz']
+        p2 = p1[-1].split(".")
+        # ['web_static_20170315003959', 'tgz']
+
+        put(archive_path, "/tmp/")
+        sudo("mkdir -p /data/web_static/releases/{}/".format(p2[0]))
+
+        data = "/data/web_static/releases"
+        sudo("tar -xzf /tmp/{} -C {}/{}/".format(p1[-1], data, p2[0]))
+        sudo("rm /tmp/{}".format(p1[-1]))
+
+        path = "mv /data/web_static/releases"
+        path2 = "/data/web_static/releases"
+        sudo("{}/{}/web_static/* {}/{}/".format(path, p2[0], path2, p2[0]))
+
+        sudo("rm -rf {}/{}//web_static".format(path2, p2[0]))
+        sudo("rm -rf /data/web_static/current")
+        sudo("ln -s {}/{}/ /data/web_static/current".format(path2, p2[0]))
+
+        print("New version deployed!")
+        return True
+
+    else:
         return False
-    rex = r'^versions/(\S+).tgz'
-    match = re.search(rex, archive_path)
-    filename = match.group(1)
-    res = put(archive_path, "/tmp/{}.tgz".format(filename))
-    if res.failed:
-        return False
-    res = run("mkdir -p /data/web_static/releases/{}/".format(filename))
-    if res.failed:
-        return False
-    res = run("tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}/"
-              .format(filename, filename))
-    if res.failed:
-        return False
-    res = run("rm /tmp/{}.tgz".format(filename))
-    if res.failed:
-        return False
-    res = run("mv /data/web_static/releases/{}"
-              "/web_static/* /data/web_static/releases/{}/"
-              .format(filename, filename))
-    if res.failed:
-        return False
-    res = run("rm -rf /data/web_static/releases/{}/web_static"
-              .format(filename))
-    if res.failed:
-        return False
-    res = run("rm -rf /data/web_static/current")
-    if res.failed:
-        return False
-    res = run("ln -s /data/web_static/releases/{}/ /data/web_static/current"
-              .format(filename))
-    if res.failed:
-        return False
-    print('New version deployed!')
-    return True
 
 
+@task
 def deploy():
-    """Creates and distributes an archive to a web server"""
-    filepath = do_pack()
-    if filepath is None:
+    """Deploy all automatic"""
+
+    new = do_pack()
+    if new is None:
         return False
-    d = do_deploy(filepath)
-    return d
+
+    new_up = do_deploy(new)
+    return new_up

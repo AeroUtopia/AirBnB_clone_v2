@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 """This is the state class"""
-from os import getenv
-from sqlalchemy import String, DateTime, Column, ForeignKey
-from sqlalchemy.orm import relationship
-import models
 from models.base_model import BaseModel, Base
-from models.city import City
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, String
+import models
+import os
 
 
 class State(BaseModel, Base):
@@ -14,14 +13,14 @@ class State(BaseModel, Base):
         name: input name
     """
     __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
 
-    if getenv('HBNB_TYPE_STORAGE') == 'db':
-        cities = relationship('City', backref='state',
-                              cascade='all, delete-orphan')
+    name = Column(String(128), nullable=False)
+    if os.getenv("HBNB_TYPE_STORAGE") == "db":
+        cities = relationship("City", backref="state", cascade="all, delete")
     else:
         @property
         def cities(self):
-            """Getter attribute in case of file storage"""
-            return [city for city in models.storage.all(City).values()
-                    if city.state_id == self.id]
+            """Getter"""
+            my_cities = [value for key, value in models.storage.all().items()
+                         if 'City' in key and value.state_id == self.id]
+            return my_cities
