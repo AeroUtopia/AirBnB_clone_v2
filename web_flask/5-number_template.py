@@ -1,48 +1,54 @@
 #!/usr/bin/python3
-"""script that starts a Flask web application"""
-from flask import Flask, render_template
+"""Starts a Flask web application"""
 
+from flask import Flask
+from flask import render_template
 app = Flask(__name__)
 
 
 @app.route('/', strict_slashes=False)
-def hello_world():
-    """hello HBNB from flask"""
+def hello_holberton():
+    """Returns a string at the root route"""
     return 'Hello HBNB!'
 
 
 @app.route('/hbnb', strict_slashes=False)
-def hello():
-    """Display HBNB"""
+def hbnb():
+    """Returns a string at the /hbnb route"""
     return 'HBNB'
 
 
 @app.route('/c/<text>', strict_slashes=False)
-def display_text(text):
-    """Display text"""
-    txt = text.replace('_', ' ')
-    return "C {}".format(txt)
+def cisfun(text):
+    """Returns a string at the /c/<text> route,
+    expands the <text> variable"""
+    new = text.replace('_', ' ')
+    return 'C %s' % new
 
 
-@app.route('/python/', defaults={'text': "is cool"}, strict_slashes=False)
+@app.route('/python', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
-def display_text_2(text):
-    """Display python"""
-    txt = text.replace('_', ' ')
-    return "Python {}".format(txt)
+def pythoniscool(text):
+    """Returns a string at the /python route, with a default text
+    of 'is cool', or the expansion of <text>"""
+    new = text.replace('_', ' ')
+    return 'Python %s' % new
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def display_number(n):
-    """Display number only if it is"""
-    return "{} is number".format(n)
+def number(n):
+    """Returns a string at the /number/<n> route,
+    only if n is an int"""
+    if type(n) == int:
+        return '%i is a number' % n
 
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
-def display_template(n):
-    """Display an html"""
-    return render_template('5-number.html', n=n)
+def number_template(n):
+    """Returns a template at the /number_template/<n> route,
+    expanding route"""
+    if type(n) == int:
+        return render_template('5-number.html', n=n)
 
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
