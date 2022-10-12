@@ -1,170 +1,97 @@
-<img src="https://github.com/johncoleman83/AirBnB_clone/blob/master/dev/HBTN-hbnb-Final.png" width="160" height=auto />
+# AirBnB clone - MySQL
 
-# AirBnB Clone Phase #1
+> This directory contains all the tasks of the project "0x02. AirBnB clone - MySQL" at [Holberton School](https://www.holbertonschool.com "Holberton School.")
 
-: python BaseModel Class, unittests, python CLI, & web static
+![GitHub repo size](https://img.shields.io/github/repo-size/luismvargasg/AirBnB_clone_v2?style=for-the-badge) ![GitHub last commit](https://img.shields.io/github/last-commit/luismvargasg/AirBnB_clone_v2?style=for-the-badge) ![GitHub contributors](https://img.shields.io/github/contributors/luismvargasg/AirBnB_clone_v2?style=for-the-badge) [![Luis Miguel Vargas](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fluismvargasg1)](https://twitter.com/luismvargasg1) [![Robinson Montes](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fmecomontes)](https://twitter.com/mecomontes)
 
-## Description
+## Table of Contents
 
-Project attempts to clone the the AirBnB application and website, including the
-database, storage, RESTful API, Web Framework, and Front End.
+- [AirBnB clone - MySQL](#airbnb-clone---mysql)
+  - [Table of Contents](#table-of-contents)
+  - [Project General Objectives](#project-general-objectives)
+  - [Project Description](#project-description)
+  - [Directory Files Description](#directory-files-description)
+  - [Prerequisites](#prerequisites)
+  - [Built With](#built-with)
+  - [AUTHORS](#authors)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
-## Environment
+## Project General Objectives
 
-* __OS:__ Ubuntu 14.04 LTS
-* __language:__ Python 3.4.3
-* __style:__ PEP 8 (v. 1.7.0)
+* What is Unit testing and how to implement it in a large project.
+* What is *args and how to use it.
+* What is **kwargs and how to use it.
+* How to handle named arguments in a function.
+* How to create a MySQL database.
+* How to create a MySQL user and grant it privileges.
+* What ORM means.
+* How to map a Python Class to a MySQL table.
+* How to handle 2 different storage engines with the same codebase.
+* How to use environment variables.
 
-<img src="https://github.com/johncoleman83/AirBnB_clone/blob/master/dev/hbnb_step5.png" />
+## Project Description
 
-## Testing
+The Airbnb clone is one of the main projects at Holberton School, it's a long term project that we need to accomplish by building up trough a series of small modules or pieces. This project is thinking as a whole for a software developer, to learn and become a full-stack developer, gluing alltogether the infrastructure of the Airbnb from back to front, including databases, static and dynamic content, web frameworks, APIs, and web infrastructure.
+The first step that we need to build is "the console" or the command interpreter, this is meant to be a tool to validate or manipulate the storage system, through the console we are gonna be able of:
+* Create our data model.
+* Manage (create, update, destroy, etc) objects.
+* Store and persist objects to a file (JSON file)
 
-#### NOTE: YOU MUST RUN THE SQL SCRIPT `setup_mysql_test.sql` RO RUN THE UNIT TESTS.
-```
-$ cat setup_mysql_test.sql | mysql -u root -p
-```
+This storage engine will give us an abstraction between “My object” and “How they are stored and persisted”.
 
+You can find this in: [AirBnB clone - The console](https://github.com/luismvargasg/AirBnB_clone)
 
-#### `unittest`
+For the second part of the project we should build the database connection through SQLAlchemy, the ORM of Python.
 
-This project uses python library, `unittest` to run tests on all python files.
-All unittests are in the `./tests` directory with the command:
+Using a MySQL storage we replace the file storage (JSON file) by a Database storage and we map your models to a table in database by using an O.R.M.
 
-* `python3 -m unittest discover -v ./tests/`
+## Directory Files Description
 
-The bash script `init_test.sh` executes all these tests:
+| **File** | **Description** |
+|----------|-----------------|
+| [Console](./console.py) | Program that contains the entry point of the command interpreter. |
+| [MySQL setup dev file](./setup_mysql_dev.sql) | Script that prepares a MySQL server for the project. |
+| [MySQL setup test file](./setup_mysql_test.sql) | Script that prepares a MySQL server for the project. |
+| [Engine DBStorage](./models/engine/db_storage.py) | Module that serializes instances in a JSON file and deserializes JSON file to instances. |
+| [File Storage](./models/engine/db_storage.py) | Module that serializes instances in a JSON file and deserializes JSON file to instances. |
+| [BaseModel](./models/base_model.py) | Class BaseModel that defines all common attributes/methods for other classes. |
+| [City](./models/city.py) | File that contains the City class that inherit from BaseModel. |
+| [State](./models/state.py) | File that contains the State class that inherit from BaseModel. |
+| [User](./models/user.py) | File that contains the User class that inherit from BaseModel. |
+| [Place](./models/place.py) | File that contains the Place class that inherit from BaseModel. |
+| [Review](./models/review.py) | File that contains the Review class that inherit from BaseModel. |
+| [Amenity](./models/amenity.py) | File that contains the Amenity class that inherit from BaseModel. |
+| [init file](./models/__init__.py) | File that defines a Python Package. |
+| [AUTHORS](./AUTHORS) | File that contains the AUTHORS of this project. |
+| [TESTS](./tests) | Directory that contains all the Unittest files to test the different classes and methods. |
 
-  * checks `pep8` style
+## Prerequisites
 
-  * runs all unittests
+This program was made and tested using Ubuntu 14.04.3 LTS and Python 3.4.3 So we recommend you to test this command interpreter under this conditions.
 
-  * runs all w3c_validator tests
+## Built With
 
-  * cleans up all `__pycache__` directories and the storage file, `file.json`
+* Ubuntu 14.04.3 LTS Running on a Virtual Machine "Vagrant"
+* GNU Emacs 24.3.1
+* Python 3.4.3
 
-**Usage:**
+## AUTHORS
 
-```
-$ ./dev/init_test.sh
-```
+**Luis Miguel Vargas**
 
-#### CLI Interactive Tests
+* [Github @luismvargasg](https://github.com/luismvargasg)
+* [LinkedIn - Luis Miguel Vargas](https://www.linkedin.com/in/luismvargasg/)
 
-This project uses python library, `cmd` to run tests in an interactive command
-line interface.  To begin tests with the CLI, run this script:
+**Robinson Montes**
 
-```
-$ ./console.py
-```
-
-* For a detailed description of all tests, run these commands inside the
-custom CLI:
-
-```
-$ ./console.py
-(hbnb) help help
-List available commands with "help" or detailed help with "help cmd".
-(hbnb) help
-
-Documented commands (type help <topic>):
-========================================
-Amenity    City  Place   State  airbnb  create   help  show
-BaseModel  EOF   Review  User   all     destroy  quit  update
-
-(hbnb) help User
-class method with .function() syntax
-        Usage: User.<command>(<id>)
-(hbnb) help create
-create: create [ARG]
-        ARG = Class Name
-        SYNOPSIS: Creates a new instance of the Class from given input ARG
-```
-
-* Tests in the CLI may also be executed with this syntax:
-
-  * **destroy:** `<class name>.destroy(<id>)`
-
-  * **update:** `<class name>.update(<id>, <attribute name>, <attribute value>)`
-
-  * **update with dictionary:** `<class name>.update(<id>, <dictionary representation>)`
-
-
-#### Continuous Integration
-
-Uses [Travis-CI](https://travis-ci.org/) to run all tests on all commits to the
-github repo
-
-## Running
-
-Clone the Repo
-```
-$ git clone https://github.com/glyif/AirBnB_clone_v3 && cd AirBnB_clone_v3
-```
-
-Install Dependencies
-```
-$ pip3 install -r requirements.txt
-```
-
-VirtualEnv Alternative
-```
-$ virtualenv -p $(which python3) env
-$ source env/bin/activate
-$ pip install -r requirements.txt
-```
-
-Running Console
-```
-$ ./console.py
-$ HBNB_MYSQL_USER=hbnb_dev HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db ./console.py
-```
-
-Running Flask API
-```
-$ HBNB_MYSQL_USER=hbnb_dev HBNB_MYSQL_PWD=hbnb_dev_pwd HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db HBNB_API_HOST=0.0.0.0 HBNB_API_PORT=5000 python3 -m api.v1.app
-```
-
-To exit out of the virtualenv, use:
-```
-$ deactivate
-```
-
-### Docker Integration
-To run with docker, it's very simple.
-
-NOTE: You will need to have docker and docker-compose installed
-
-First, build all of the images. (console, db, api)
-```
-$ docker-compose build --no-cache
-```
-
-Then you can just run the images
-```
-$ docker-compose up -d
-```
-
-To use the console, you'll need to run:
-```
-$ docker exec -it <container_id> /bin/bash
-```
-NOTE: you will need to replace <container_id> with the actual console container id
-
-NOTE: TESTING WITH DOCKERHUB AND RANCHER
-## API Documentation
-There is a postman json in side the API folder that you can import to check out the api endpoints, or you can go to [the online version](https://documenter.getpostman.com/view/1535334/airbnb_clone_v3/6tc3iuA)
-
-Swagger documentation will soon come.
-
-## Authors
-
-* MJ Johnson, [@mj31508](https://github.com/mj31508)
-* David John Coleman II, [davidjohncoleman.com](http://www.davidjohncoleman.com/)
-* Kimberly Wong, [kjowong](http://github.com/kjowong) | [@kjowong](http://twitter.com/kjowong) | [kjowong@gmail.com](kjowong@gmail.com)
-* Carrie Ybay, [hicarrie](http://github.com/hicarrie) | [@hicarrie_](http://twitter.com/hicarrie_)
-* Naomi Sorrell, [NamoDawn](https://github.com/NamoDawn) | [@NamoDawn](https://twitter.com/NamoDawn)
-* Bobby Yang, [glyif](https://github.com/glyif) | [@bobstermyang](https://twitter.com/bobstermyang)
+* [Github @mecomonteshbtn](https://github.com/mecomonteshbtn)
+* [LinkedIn - Robinson Montes Gómez](https://www.linkedin.com/in/robinson-montes-g%C3%B3mez/)
 
 ## License
 
-Public Domain, no copyright protection
+Opensource project.
+
+## Acknowledgments
+
+* Project made at Holberton School - Colombia

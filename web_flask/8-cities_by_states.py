@@ -1,28 +1,29 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 """
-    Sript that starts a Flask web application
+Created on Tue Sep  1 14:42:23 2020
+
+@author: Robinson Montes
 """
-from flask import Flask, render_template
 from models import storage
-import os
+from models.state import State
+from flask import Flask, render_template
 app = Flask(__name__)
 
 
 @app.teardown_appcontext
-def handle_teardown(self):
-    """
-        method to handle teardown
+def appcontext_teardown(self):
+    """use storage for fetching data from the storage engine
     """
     storage.close()
 
 
 @app.route('/cities_by_states', strict_slashes=False)
-def city_state_list():
-    """
-        method to render states from storage
-    """
-    states = storage.all('State').values()
-    return render_template("8-cities_by_states.html", states=states)
+def state_info():
+    """Display a HTML page inside the tag BODY"""
+    return render_template('8-cities_by_states.html',
+                           states=storage.all(State))
+
 
 if __name__ == '__main__':
-        app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
