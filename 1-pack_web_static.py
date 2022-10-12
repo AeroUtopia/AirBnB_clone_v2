@@ -1,26 +1,23 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 13 14:21:54 2020
-@author: Robinson Montes
-"""
-from fabric.api import local, env
+"""Compress files"""
+from fabric.api import *
 from datetime import datetime
-
-env.user = 'ubuntu'
-env.hosts = ['35.227.35.75', '100.24.37.33']
+from os.path import getsize
 
 
+@runs_once
 def do_pack():
-    """
-    Targging project directory into a packages as .tgz
-    """
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
-    local('sudo mkdir -p ./versions')
-    path = './versions/web_static_{}'.format(now)
-    local('sudo tar -czvf {}.tgz web_static'.format(path))
-    name = '{}.tgz'.format(path)
-    if name:
-        return name
+    """Function that compress a files"""
+    fil = "web_static_{:s}.tgz".format(datetime.now().strftime("%Y%m%d%H%M%S"))
+    print("Packing web_static to versions/{}".format(fil))
+
+    local("mkdir -p versions")
+    path = local("tar -cvzf versions/{:s} web_static".format(fil))
+
+    size = getsize("versions/{}".format(fil))
+
+    if path.succeeded:
+        print("web_static packed: versions/{} -> {}Bytes".format(fil, size))
+        return("versions/{}".format(fil))
     else:
         return None

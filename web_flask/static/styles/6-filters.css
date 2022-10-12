@@ -1,80 +1,85 @@
-section.filters {
+.filters{
+    display: flex;
+    align-items: center;
     background-color: white;
     height: 70px;
     width: 100%;
-    border: 1px solid #DDDDDD;
+    border: solid 1px #DDDDDD;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
     position: relative;
+    resize: vertical;
 }
-
-section.filters button {
+button{
+    position: absolute;
+    right: 30px;
     font-size: 18px;
-    background-color: #FF5A5F;
-    color: #FFFFFF;
+    background-color: #ff5a5f;
+    color: #ffffff;
     height: 48px;
     width: 20%;
-    border: none;
+    border: 0;
     border-radius: 4px;
-    margin: 0 30px 0 auto;
+    cursor: pointer;
 }
-
-section.filters  button:hover {
-    opacity: 0.9;
+button:hover{
+    opacity: .9;
 }
-
-.locations,
-.amenities {
+.locations {
     height: 100%;
     width: 25%;
-    margin-left: 50px;
+    border-right: 1px #dddddd solid;
 }
 
-.locations {
-    border-right: 1px solid #DDDDDD;
+.amenities{
+    height: 100%;
+    width: 25%;
 }
-
-.locations h3,
-.amenities h3 {
+h3{
     font-weight: 600;
-    margin: 15px 0 0 0;
+    margin-top: 10px;
 }
-
-.locations h4,
-.amenities h4 {
+h4{
     font-weight: 400;
     font-size: 14px;
-    margin: 3px 0 0 0;
+    margin-top: -12px;
+}
+.filters div h4,
+.filters div h3{
+    margin-left: 35px;
 }
 
-.popover {
-    display: none;
-    padding-top: 20px;
-    padding-bottom: 25px;
-    max-height: 300px;
-    overflow-y: scroll;
-}
-
-.locations:hover .popover,
-.amenities:hover .popover {
-    display: block;
+.popover{
+    display:none;
+    position: absolute;
+    top: 56px;
+    padding-top: 5px;
+    padding-left: 19px;
     background-color: #FAFAFA;
-    border: 1px solid #DDDDDD;
+    border: 1px #dddddd solid;
     border-radius: 4px;
-    width: 103.5%;
-    margin: 16px 0 0 -50px;
+    width: 23%;
+    z-index: 100;
 }
 
-.amenities li {
+li{
     list-style: none;
-    padding: 3px;
-    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-top: 3px;
+    padding-left: 10px;
+    line-height: 23px;
 }
 
-.locations li{
-    margin-left: -20px;
-    margin-top: -5px;
-    list-style: none;
-    padding: 3px;
+h2{
+    font-size: 16px;
+    margin: 0;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-left: -15px;
+    padding: 0;
+}
+
+div:hover > .popover{
+    display: block;
+    overflow-y: scroll;
+    max-height: 300px;
 }

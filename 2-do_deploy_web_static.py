@@ -1,47 +1,37 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 13 14:21:54 2020
-@author: Robinson Montes
-"""
-from fabric.api import local, put, run, env
-from datetime import datetime
-
-env.user = 'ubuntu'
-env.hosts = ['35.227.35.75', '100.24.37.33']
+"""distributes an archive to your web servers"""
+from fabric.api import *
+import os.path
 
 
-def do_pack():
-    """
-    Targginng project directory into a packages as .tgz
-    """
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
-    local('sudo mkdir -p ./versions')
-    path = './versions/web_static_{}'.format(now)
-    local('sudo tar -czvf {}.tgz web_static'.format(path))
-    name = '{}.tgz'.format(path)
-    if name:
-        return name
-    else:
-        return None
+env.hosts = ["35.231.133.57", "54.91.43.217"]
 
 
 def do_deploy(archive_path):
-    """Deploy the boxing package tgz file
-    """
-    try:
-        archive = archive_path.split('/')[-1]
-        path = '/data/web_static/releases/' + archive.strip('.tgz')
-        current = '/data/web_static/current'
-        put(archive_path, '/tmp')
-        run('mkdir -p {}/'.format(path))
-        run('tar -xzf /tmp/{} -C {}'.format(archive, path))
-        run('rm /tmp/{}'.format(archive))
-        run('mv {}/web_static/* {}'.format(path, path))
-        run('rm -rf {}/web_static'.format(path))
-        run('rm -rf {}'.format(current))
-        run('ln -s {} {}'.format(path, current))
-        print('New version deployed!')
+    """functio that distributes an archive to your web servers"""
+    if os.path.isfile(archive_path):
+        p1 = archive_path.split("/")
+        # ['versions', 'web_static_20170315003959.tgz']
+        p2 = p1[-1].split(".")
+        # ['web_static_20170315003959', 'tgz']
+
+        put(archive_path, "/tmp/")
+        sudo("mkdir -p /data/web_static/releases/{}/".format(p2[0]))
+
+        data = "/data/web_static/releases"
+        sudo("tar -xzf /tmp/{} -C {}/{}/".format(p1[-1], data, p2[0]))
+        sudo("rm /tmp/{}".format(p1[-1]))
+
+        path = "mv /data/web_static/releases"
+        path2 = "/data/web_static/releases"
+        sudo("{}/{}/web_static/* {}/{}/".format(path, p2[0], path2, p2[0]))
+
+        sudo("rm -rf {}/{}//web_static".format(path2, p2[0]))
+        sudo("rm -rf /data/web_static/current")
+        sudo("ln -s {}/{}/ /data/web_static/current".format(path2, p2[0]))
+
+        print("New version deployed!")
         return True
-    except:
+
+    else:
         return False
